@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Validation Form</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/slate/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <h2 class="text-center mt-5">Validation Form</h2>
+        <form id="myForm" onsubmit="return validateForm()">
+            <div class="form-group">
+                <label for="exampleInputName">Name</label>
+                <input type="text" class="form-control" id="exampleInputName" placeholder="Enter your name" required>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter your email" required disabled>
+                <small id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPassword">Password</label>
+                <input type="password" class="form-control" id="exampleInputPassword" placeholder="Password" minlength="8" required disabled>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputConfirmPassword">Confirm Password</label>
+                <input type="password" class="form-control" id="exampleInputConfirmPassword" placeholder="Confirm Password" minlength="8" required disabled>
+                <small id="passwordMismatch" class="form-text text-danger d-none">Passwords do not match!</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputPhoneNumber">Phone Number</label>
+                <input type="tel" class="form-control" id="exampleInputPhoneNumber" placeholder="Enter your phone number" pattern="[0-9]{10}" required disabled>
+                <small id="phoneError" class="form-text text-danger d-none">Please enter a 10-digit phone number.</small>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputGender">Gender</label>
+                <select class="form-control" id="exampleInputGender" required disabled>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputDOB">Date of Birth</label>
+                <input type="date" class="form-control" id="exampleInputDOB" required disabled>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputAddress">Address</label>
+                <textarea class="form-control" id="exampleInputAddress" placeholder="Enter your Address" required disabled></textarea>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary" id="submitButton" disabled>Submit</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('myForm');
+        const fields = form.querySelectorAll('.form-control');
+        const submitButton = document.getElementById('submitButton');
+
+        // Listen for keypress events
+        fields.forEach((field, index) => {
+            field.addEventListener('keypress', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    if (index < fields.length - 1 && fields[index + 1].disabled) {
+                        fields[index + 1].removeAttribute('disabled');
+                        fields[index + 1].focus();
+                    }
+                }
+            });
+        });
+
+        // Listen for input events to enable/disable submit button
+        form.addEventListener('input', () => {
+            let allFieldsFilled = true;
+            fields.forEach(field => {
+                if (field.value === '') {
+                    allFieldsFilled = false;
+                }
+            });
+            submitButton.disabled = !allFieldsFilled;
+        });
+
+        // Form validation function
+        function validateForm() {
+            var password = document.getElementById("exampleInputPassword").value;
+            var confirmPassword = document.getElementById("exampleInputConfirmPassword").value;
+
+            if (password !== confirmPassword) {
+                document.getElementById("passwordMismatch").classList.remove("d-none");
+                return false;
+            } else {
+                document.getElementById("passwordMismatch").classList.add("d-none");
+            }
+
+            var phoneNumber = document.getElementById("exampleInputPhoneNumber").value;
+            if (!isValidPhoneNumber(phoneNumber)) {
+                document.getElementById("phoneError").classList.remove("d-none");
+                return false;
+            } else {
+                document.getElementById("phoneError").classList.add("d-none");
+            }
+
+            var name = document.getElementById("exampleInputName").value;
+            var email = document.getElementById("exampleInputEmail1").value;
+            var password = document.getElementById("exampleInputPassword").value;
+            var phoneNumber = document.getElementById("exampleInputPhoneNumber").value;
+            var gender = document.getElementById("exampleInputGender").value;
+            var address = document.getElementById("exampleInputAddress").value;
+            var dob = document.getElementById("exampleInputDOB").value;
+
+            localStorage.setItem("name", name);
+            localStorage.setItem("email", email);
+            localStorage.setItem("password", password);
+            localStorage.setItem("phoneNumber", phoneNumber);
+            localStorage.setItem("gender", gender);
+            localStorage.setItem("address", address);
+            localStorage.setItem("dob", dob);
+
+            window.location.href = "display.html";
+
+            return false; // Prevent default form submission
+        }
+
+        function isValidPhoneNumber(phoneNumber) {
+            var numericPhoneNumber = phoneNumber.replace(/\D/g, '');
+            return numericPhoneNumber.length === 10;
+        }
+    </script>
+
+</body>
+</html>
